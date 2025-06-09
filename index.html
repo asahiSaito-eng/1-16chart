@@ -9,9 +9,14 @@
       font-family: sans-serif;
       padding: 20px;
     }
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
     .grid {
       display: grid;
-      grid-template-columns: repeat(5, 100px);
+      grid-template-columns: repeat(6, 100px);
       gap: 10px;
       margin-bottom: 20px;
     }
@@ -44,25 +49,49 @@
 </head>
 <body>
   <h1>学校の座席表</h1>
+  <div class="grid" id="column-labels"></div>
   <div class="grid" id="seating-grid"></div>
+  <div class="label">黒板</div>
 
   <div class="buttons">
     <button onclick="window.print()">印刷 / PDF出力</button>
   </div>
 
   <script>
-    const rows = 4; // 行数
-    const cols = 5; // 列数
+    const colLabels = document.getElementById("column-labels");
     const grid = document.getElementById("seating-grid");
 
-    for (let i = 0; i < rows * cols; i++) {
-      const seat = document.createElement("div");
-      seat.className = "seat";
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "名前";
-      seat.appendChild(input);
-      grid.appendChild(seat);
+    // 座席構成（両端5人、それ以外6人、6列）
+    const seatingLayout = [5, 6, 6, 6, 6, 5];
+    const maxRows = Math.max(...seatingLayout);
+
+    // 列番号（1〜6）
+    for (let i = 0; i < seatingLayout.length; i++) {
+      const label = document.createElement("div");
+      label.className = "seat";
+      label.style.fontWeight = "bold";
+      label.style.backgroundColor = "#f0f0f0";
+      label.textContent = i + 1;
+      colLabels.appendChild(label);
+    }
+
+    // 座席番号（行番号 1〜）を表示
+    for (let row = 0; row < maxRows; row++) {
+      for (let col = 0; col < seatingLayout.length; col++) {
+        if (row < seatingLayout[col]) {
+          const seat = document.createElement("div");
+          seat.className = "seat";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = (row + 1).toString();
+          seat.appendChild(input);
+          grid.appendChild(seat);
+        } else {
+          const empty = document.createElement("div");
+          empty.style.visibility = "hidden";
+          grid.appendChild(empty);
+        }
+      }
     }
   </script>
 </body>
