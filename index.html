@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>学校の座席表</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 100px);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .seat {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 60px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .seat input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    @media print {
+      .buttons {
+        display: none;
+      }
+      input {
+        border: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>学校の座席表</h1>
+  <div class="grid" id="seating-grid"></div>
+
+  <div class="buttons">
+    <button onclick="window.print()">印刷 / PDF出力</button>
+  </div>
+
+  <script>
+    const rows = 4; // 行数
+    const cols = 5; // 列数
+    const grid = document.getElementById("seating-grid");
+
+    for (let i = 0; i < rows * cols; i++) {
+      const seat = document.createElement("div");
+      seat.className = "seat";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "名前";
+      seat.appendChild(input);
+      grid.appendChild(seat);
+    }
+  </script>
+</body>
+</html>
