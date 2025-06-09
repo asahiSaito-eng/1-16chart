@@ -6,85 +6,85 @@
   <title>学校の座席表</title>
   <style>
     @page {
-  size: A4 landscape;
-  margin: 10mm;
-}
+      size: A4 landscape;
+      margin: 10mm;
+    }
 
-body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-}
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 5mm;
-  width: 100%;
-  max-width: 270mm;
-  margin-bottom: 10mm;
-  padding: 0 5mm;
-  box-sizing: border-box;
-}
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4mm;
+      width: 100%;
+      max-width: 265mm;
+      margin-bottom: 10mm;
+      padding: 0 5mm;
+      box-sizing: border-box;
+    }
 
-.seat {
-  aspect-ratio: 5 / 3;
-  border: 0.3mm solid #000;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 3mm;
-}
+    .seat {
+      width: 100%;
+      aspect-ratio: 7 / 3;
+      border: 0.3mm solid #000;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 3mm;
+    }
 
-.seat input.number {
-  width: 20%;
-  font-size: 10pt;
-  border: none;
-  text-align: center;
-  background: #f0f0f0;
-  margin-right: 2mm;
-}
+    .seat input.number {
+      width: 20%;
+      font-size: 10pt;
+      border: none;
+      text-align: center;
+      background: #f0f0f0;
+      margin-right: 2mm;
+    }
 
-.seat input.name {
-  width: 70%;
-  font-size: 11pt;
-  border: none;
-  text-align: center;
-}
+    .seat input.name {
+      width: 70%;
+      font-size: 11pt;
+      border: none;
+      text-align: center;
+    }
 
-.blackboard {
-  width: 100%;
-  max-width: 270mm;
-  border: 0.4mm solid black;
-  text-align: center;
-  font-weight: bold;
-  padding: 5mm;
-  box-sizing: border-box;
-}
+    .blackboard {
+      width: 100%;
+      max-width: 265mm;
+      border: 0.4mm solid black;
+      text-align: center;
+      font-weight: bold;
+      padding: 4mm;
+      box-sizing: border-box;
+      font-size: 18pt;
+    }
 
-.buttons {
-  margin-top: 20px;
-}
+    .buttons {
+      margin-top: 20px;
+    }
 
-@media print {
-  .buttons, h1 {
-    display: none;
-  }
-  input {
-    border: none;
-    background: none;
-  }
-  body {
-    padding: 0;
-    align-items: flex-start;
-  }
-}
-
+    @media print {
+      .buttons, h1 {
+        display: none;
+      }
+      input {
+        border: none;
+        background: none;
+      }
+      body {
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
