@@ -39,25 +39,33 @@
       border: 0.3mm solid #000;
       box-sizing: border-box;
       display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding-left: 3mm;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2mm;
     }
 
-    .seat input.number {
-      width: 20%;
+    .number-input {
+      width: 30%;
       font-size: 10pt;
-      border: none;
       text-align: center;
       background: #f0f0f0;
-      margin-right: 2mm;
+      border: none;
+      margin-bottom: 2mm;
     }
 
-    .seat input.name {
-      width: 70%;
-      font-size: 11pt;
-      border: none;
+    .name-display {
       text-align: center;
+      font-size: 10.5pt;
+      line-height: 1.2;
+    }
+
+    .name-display .name {
+      font-weight: bold;
+    }
+
+    .name-display .kana {
+      font-size: 9pt;
+      color: #444;
     }
 
     .blackboard {
@@ -104,6 +112,20 @@
   <script>
     const grid = document.getElementById("seating-grid");
 
+    // 生徒データ（出席番号, 名前, ヨミガナ）
+    const students = [
+      { number: 1, name: "山田太郎", kana: "ヤマダ タロウ" },
+      { number: 2, name: "佐藤花子", kana: "サトウ ハナコ" },
+      { number: 3, name: "鈴木一郎", kana: "スズキ イチロウ" },
+      { number: 4, name: "高橋未来", kana: "タカハシ ミライ" },
+      { number: 5, name: "田中健", kana: "タナカ ケン" },
+      { number: 6, name: "小林舞", kana: "コバヤシ マイ" },
+      { number: 7, name: "加藤翔", kana: "カトウ ショウ" },
+      { number: 8, name: "伊藤咲", kana: "イトウ サキ" },
+      { number: 9, name: "中村光", kana: "ナカムラ ヒカル" },
+      { number: 10, name: "渡辺優", kana: "ワタナベ ユウ" },
+    ];
+
     const layout = [5, 6, 6, 6, 6, 5];
     const maxRows = Math.max(...layout);
 
@@ -115,15 +137,33 @@
 
           const numberInput = document.createElement("input");
           numberInput.type = "text";
-          numberInput.className = "number";
+          numberInput.className = "number-input";
           numberInput.placeholder = "#";
 
-          const nameInput = document.createElement("input");
-          nameInput.type = "text";
-          nameInput.className = "name";
+          const nameDisplay = document.createElement("div");
+          nameDisplay.className = "name-display";
+          const nameLine = document.createElement("div");
+          nameLine.className = "name";
+          const kanaLine = document.createElement("div");
+          kanaLine.className = "kana";
+
+          nameDisplay.appendChild(nameLine);
+          nameDisplay.appendChild(kanaLine);
+
+          numberInput.addEventListener("input", () => {
+            const n = parseInt(numberInput.value);
+            const student = students.find(s => s.number === n);
+            if (student) {
+              nameLine.textContent = student.name;
+              kanaLine.textContent = student.kana;
+            } else {
+              nameLine.textContent = "";
+              kanaLine.textContent = "";
+            }
+          });
 
           seat.appendChild(numberInput);
-          seat.appendChild(nameInput);
+          seat.appendChild(nameDisplay);
           grid.appendChild(seat);
         } else {
           const empty = document.createElement("div");
