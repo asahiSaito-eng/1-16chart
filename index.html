@@ -5,34 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>学校の座席表</title>
   <style>
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
     body {
       font-family: sans-serif;
-      padding: 20px;
+      padding: 10mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .label {
-      font-weight: bold;
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-    .grid {
+    .grid-container {
       display: grid;
       grid-template-columns: repeat(6, 100px);
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
     .seat {
-      border: 1px solid #ccc;
-      padding: 10px;
+      width: 100px;
       height: 60px;
-      text-align: center;
-      vertical-align: middle;
+      border: 1px solid #000;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 5px;
+      position: relative;
     }
-    .seat input {
-      width: 100%;
-      height: 100%;
+    .seat input.number {
+      width: 20%;
+      height: 80%;
+      font-size: 14px;
       border: none;
       text-align: center;
+      background: #f0f0f0;
+      margin-right: 5px;
+    }
+    .seat input.name {
+      width: 70%;
+      height: 80%;
       font-size: 16px;
+      border: none;
+      text-align: center;
+    }
+    .blackboard {
+      width: calc(100px * 6 + 50px);
+      border: 1px solid black;
+      text-align: center;
+      font-weight: bold;
+      padding: 10px;
+      margin-top: 10px;
     }
     .buttons {
       margin-top: 20px;
@@ -48,46 +71,41 @@
   </style>
 </head>
 <body>
-  <h1>学校の座席表</h1>
-  <div class="grid" id="column-labels"></div>
-  <div class="grid" id="seating-grid"></div>
-  <div class="label">黒板</div>
+  <h1>1-16座席表</h1>
+  <div class="grid-container" id="seating-grid"></div>
+  <div class="blackboard">黒板</div>
 
   <div class="buttons">
     <button onclick="window.print()">印刷 / PDF出力</button>
   </div>
 
   <script>
-    const colLabels = document.getElementById("column-labels");
     const grid = document.getElementById("seating-grid");
 
-    // 座席構成（両端5人、それ以外6人、6列）
-    const seatingLayout = [5, 6, 6, 6, 6, 5];
-    const maxRows = Math.max(...seatingLayout);
+    const layout = [5, 6, 6, 6, 6, 5];
+    const maxRows = Math.max(...layout);
 
-    // 列番号（1〜6）
-    for (let i = 0; i < seatingLayout.length; i++) {
-      const label = document.createElement("div");
-      label.className = "seat";
-      label.style.fontWeight = "bold";
-      label.style.backgroundColor = "#f0f0f0";
-      label.textContent = i + 1;
-      colLabels.appendChild(label);
-    }
-
-    // 座席番号（行番号 1〜）を表示
     for (let row = 0; row < maxRows; row++) {
-      for (let col = 0; col < seatingLayout.length; col++) {
-        if (row < seatingLayout[col]) {
+      for (let col = 0; col < layout.length; col++) {
+        if (row < layout[col]) {
           const seat = document.createElement("div");
           seat.className = "seat";
-          const input = document.createElement("input");
-          input.type = "text";
-          input.placeholder = (row + 1).toString();
-          seat.appendChild(input);
+
+          const numberInput = document.createElement("input");
+          numberInput.type = "text";
+          numberInput.className = "number";
+          numberInput.placeholder = "#";
+
+          const nameInput = document.createElement("input");
+          nameInput.type = "text";
+          nameInput.className = "name";
+
+          seat.appendChild(numberInput);
+          seat.appendChild(nameInput);
           grid.appendChild(seat);
         } else {
           const empty = document.createElement("div");
+          empty.className = "seat";
           empty.style.visibility = "hidden";
           grid.appendChild(empty);
         }
