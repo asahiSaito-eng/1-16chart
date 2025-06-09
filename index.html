@@ -40,8 +40,10 @@
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      align-items: center;
+      justify-content: flex-start;
       padding: 2mm;
+      overflow: hidden;
     }
 
     .number-input {
@@ -55,12 +57,22 @@
 
     .name-display {
       text-align: center;
-      font-size: 10.5pt;
-      line-height: 1.2;
+      font-size: 10pt;
+      line-height: 1.1;
+      flex-grow: 1;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .name-display .name {
       font-weight: bold;
+      font-size: 10.5pt;
     }
 
     .name-display .kana {
@@ -112,7 +124,6 @@
   <script>
     const grid = document.getElementById("seating-grid");
 
-    // 生徒データ（出席番号, 名前, ヨミガナ）
     const students = [
       { number: 1, name: "山田太郎", kana: "ヤマダ タロウ" },
       { number: 2, name: "佐藤花子", kana: "サトウ ハナコ" },
