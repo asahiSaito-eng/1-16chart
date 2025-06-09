@@ -17,23 +17,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       min-height: 100vh;
       box-sizing: border-box;
     }
 
-    .layout-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 265mm;
-      margin-bottom: 80px; /* 下の固定ボタンのスペース確保 */
-    }
-
     .grid-container {
       display: grid;
+      grid-template-columns: repeat(6, 1fr);
       gap: 4mm;
       width: 100%;
+      max-width: 265mm;
+      margin-bottom: 10mm;
       padding: 0 5mm;
       box-sizing: border-box;
     }
@@ -85,6 +80,7 @@
 
     .blackboard {
       width: 100%;
+      max-width: 265mm;
       border: 0.4mm solid black;
       text-align: center;
       font-weight: bold;
@@ -93,33 +89,8 @@
       font-size: 18pt;
     }
 
-    /* 押しやすいボタン固定表示 */
     .buttons {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff;
-      padding: 10px 20px;
-      border: 0.3mm solid #000;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.2);
-      display: flex;
-      gap: 20px;
-      z-index: 1000;
-    }
-
-    .buttons button {
-      font-size: 16px;
-      padding: 10px 20px;
-      cursor: pointer;
-      border: 0.2mm solid #333;
-      border-radius: 6px;
-      background-color: #e0e0e0;
-      transition: background-color 0.3s ease;
-    }
-    .buttons button:hover {
-      background-color: #ccc;
+      margin-top: 20px;
     }
 
     @media print {
@@ -141,28 +112,16 @@
 </head>
 <body>
   <h1>1-16座席表</h1>
-
-  <div class="layout-container" id="layout-container">
-    <div class="blackboard" id="blackboard">黒板</div>
-    <div class="grid-container" id="seating-grid"></div>
-  </div>
+  <div class="grid-container" id="seating-grid"></div>
+  <div class="blackboard">黒板</div>
 
   <div class="buttons">
     <button onclick="window.print()">印刷 / PDF出力</button>
-    <button id="toggle-btn">黒板の位置を切り替える</button>
   </div>
 
   <script>
     const grid = document.getElementById("seating-grid");
-    const layoutContainer = document.getElementById("layout-container");
-    const blackboard = document.getElementById("blackboard");
-    const toggleBtn = document.getElementById("toggle-btn");
 
-    // 座席レイアウト [列ごとの行数]
-    const layout = [5, 6, 6, 6, 6, 5];
-    const maxRows = Math.max(...layout);
-
-    // 生徒データ（例）
     const students = [
       { number: 1, name: "山田太郎", kana: "ヤマダ タロウ" },
       { number: 2, name: "佐藤花子", kana: "サトウ ハナコ" },
@@ -176,106 +135,53 @@
       { number: 10, name: "渡辺優", kana: "ワタナベ ユウ" },
     ];
 
-    // 現在の黒板位置（true=上、false=下）
-    let blackboardAtTop = true;
+    const layout = [5, 6, 6, 6, 6, 5];
+    const maxRows = Math.max(...layout);
 
-    // 座席表示用配列
-    let seats = [];
+    for (let row = 0; row < maxRows; row++) {
+      for (let col = 0; col < layout.length; col++) {
+        if (row < layout[col]) {
+          const seat = document.createElement("div");
+          seat.className = "seat";
 
-    // 座席の入れ替えを考慮して座席を作る関数
-    function renderSeats(blackboardTop) {
-      // いったん空にする
-      grid.innerHTML = "";
+          const numberInput = document.createElement("input");
+          numberInput.type = "text";
+          numberInput.className = "number-input";
+          numberInput.placeholder = "#";
 
-      // 列数
-      const cols = layout.length;
-      // 行数は最大値固定
+          const nameDisplay = document.createElement("div");
+          nameDisplay.className = "name-display";
+          const nameLine = document.createElement("div");
+          nameLine.className = "name";
+          const kanaLine = document.createElement("div");
+          kanaLine.className = "kana";
 
-      // grid-template-columnsをセット
-      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+          nameDisplay.appendChild(nameLine);
+          nameDisplay.appendChild(kanaLine);
 
-      // 座席配列を一度作成（座席は行列で整理）
-      // 生徒視点（黒板上）なら、列も行も逆順に表示する
-      // 先生視点（黒板下）なら、通常順
+          numberInput.addEventListener("input", () => {
+            const n = parseInt(numberInput.value);
+            const student = students.find(s => s.number === n);
+            if (student) {
+              nameLine.textContent = student.name;
+              kanaLine.textContent = student.kana;
+            } else {
+              nameLine.textContent = "";
+              kanaLine.textContent = "";
+            }
+          });
 
-      // 表示順を決定するためのループを作る
-
-      // 列の表示順
-      const colIndices = blackboardTop ? [...Array(cols).keys()].reverse() : [...Array(cols).keys()];
-      // 各列の行の表示順
-      const rowOrder = blackboardTop ? 'reverse' : 'normal';
-
-      // 座席作成ループ
-      for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
-        for (const colIndex of colIndices) {
-          const seatCountInCol = layout[colIndex];
-          // rowIndex は上から順だが、生徒視点なら反転
-          const seatRow = blackboardTop ? (seatCountInCol - 1 - rowIndex) : rowIndex;
-
-          if (seatRow >= 0 && seatRow < seatCountInCol) {
-            const seat = document.createElement("div");
-            seat.className = "seat";
-
-            const numberInput = document.createElement("input");
-            numberInput.type = "text";
-            numberInput.className = "number-input";
-            numberInput.placeholder = "#";
-
-            const nameDisplay = document.createElement("div");
-            nameDisplay.className = "name-display";
-            const nameLine = document.createElement("div");
-            nameLine.className = "name";
-            const kanaLine = document.createElement("div");
-            kanaLine.className = "kana";
-
-            nameDisplay.appendChild(nameLine);
-            nameDisplay.appendChild(kanaLine);
-
-            numberInput.addEventListener("input", () => {
-              const n = parseInt(numberInput.value);
-              const student = students.find(s => s.number === n);
-              if (student) {
-                nameLine.textContent = student.name;
-                kanaLine.textContent = student.kana;
-              } else {
-                nameLine.textContent = "";
-                kanaLine.textContent = "";
-              }
-            });
-
-            seat.appendChild(numberInput);
-            seat.appendChild(nameDisplay);
-            grid.appendChild(seat);
-          } else {
-            const empty = document.createElement("div");
-            empty.className = "seat";
-            empty.style.visibility = "hidden";
-            grid.appendChild(empty);
-          }
+          seat.appendChild(numberInput);
+          seat.appendChild(nameDisplay);
+          grid.appendChild(seat);
+        } else {
+          const empty = document.createElement("div");
+          empty.className = "seat";
+          empty.style.visibility = "hidden";
+          grid.appendChild(empty);
         }
       }
     }
-
-    // 初期描画は黒板上（生徒視点）
-    renderSeats(blackboardAtTop);
-
-    // 黒板の上下切り替えと座席再描画
-    function toggleBlackboard() {
-      blackboardAtTop = !blackboardAtTop;
-
-      // 黒板の位置切り替えDOM
-      layoutContainer.removeChild(blackboard);
-      if (blackboardAtTop) {
-        layoutContainer.insertBefore(blackboard, layoutContainer.firstChild);
-      } else {
-        layoutContainer.appendChild(blackboard);
-      }
-
-      // 座席再描画
-      renderSeats(blackboardAtTop);
-    }
-
-    toggleBtn.addEventListener("click", toggleBlackboard);
   </script>
 </body>
 </html>
