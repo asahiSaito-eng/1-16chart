@@ -116,13 +116,12 @@
   <div class="blackboard">黒板</div>
 
   <div class="buttons">
+    <button onclick="toggleView()">後ろから見たレイアウトに切り替え</button>
     <button onclick="window.print()">印刷 / PDF出力</button>
-    <button onclick="toggleView()">前から見る / 後ろから見る</button>
   </div>
 
   <script>
     const grid = document.getElementById("seating-grid");
-    let frontView = true;
 
     const students = [
       { "number": 1, "name": "相坂美怜", "kana": "アイサカ ミサト" },
@@ -163,14 +162,14 @@
 
     const layout = [5, 6, 6, 6, 6, 5];
     const maxRows = Math.max(...layout);
+    let reversed = false;
 
-    function renderGrid() {
+    function createGrid(reverse = false) {
       grid.innerHTML = "";
-
       for (let row = 0; row < maxRows; row++) {
-        for (let col = 0; col < layout.length; col++) {
-          const realCol = frontView ? col : layout.length - 1 - col;
-          if (row < layout[realCol]) {
+        const cols = reverse ? [...layout].reverse() : layout;
+        for (let col = 0; col < cols.length; col++) {
+          if (row < cols[col]) {
             const seat = document.createElement("div");
             seat.className = "seat";
 
@@ -215,11 +214,12 @@
     }
 
     function toggleView() {
-      frontView = !frontView;
-      renderGrid();
+      reversed = !reversed;
+      createGrid(reversed);
     }
 
-    renderGrid();
+    // 初期表示
+    createGrid();
   </script>
 </body>
 </html>
