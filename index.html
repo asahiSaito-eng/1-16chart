@@ -1,4 +1,4 @@
-あなた:
+aqqqqqqqqあなた:
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -117,6 +117,11 @@
   <div class="blackboard">黒板</div>
 
   <div class="buttons">
+  <button onclick="assignRandomSeats()">ランダムに座席を決定</button>
+  <button onclick="window.print()">印刷 / PDF出力</button>
+  </div>
+  
+  <div class="buttons">
     <button onclick="window.print()">印刷 / PDF出力</button>
   </div>
 
@@ -207,6 +212,30 @@
         }
       }
     }
+
+    function shuffleArray(array) {
+  // フィッシャー–イェーツのシャッフルアルゴリズム
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function assignRandomSeats() {
+  const seats = document.querySelectorAll(".seat input.number-input");
+  const shuffled = shuffleArray([...students]); // studentsをコピーしてシャッフル
+  seats.forEach((input, index) => {
+    if (index < shuffled.length) {
+      input.value = shuffled[index].number;
+      input.dispatchEvent(new Event("input")); // 自動的に名前を更新
+    } else {
+      input.value = "";
+      input.dispatchEvent(new Event("input"));
+    }
+  });
+}
+
   </script>
 </body>
 </html>
