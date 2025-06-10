@@ -114,15 +114,14 @@
   <h1>1-16座席表</h1>
   <div class="grid-container" id="seating-grid"></div>
   <div class="blackboard">黒板</div>
-
-  <div class="buttons">
-  <button onclick="assignRandomSeats()">ランダムに座席を決定</button>
-  <button onclick="window.print()">印刷 / PDF出力</button>
-  </div>
   
   <div class="buttons">
-    <button onclick="window.print()">印刷 / PDF出力</button>
+  <button onclick="assignRandomSeats()">ランダムに座席を決定</button>
+  <button onclick="restoreOriginalSeats()">元に戻す</button>
+  <button onclick="saveSeatAssignment()">固定割り当て保存</button>
+  <button onclick="window.print()">印刷 / PDF出力</button>
   </div>
+
 
   <script>
     const grid = document.getElementById("seating-grid");
@@ -222,18 +221,57 @@
 }
 
 function assignRandomSeats() {
-  const seats = document.querySelectorAll(".seat input.number-input");
-  const shuffled = shuffleArray([...students]); // studentsをコピーしてシャッフル
+  saveOriginalSeats(); // 元に戻すために保存
+  const shuffled = shuffleArray([...students]);
   seats.forEach((input, index) => {
     if (index < shuffled.length) {
       input.value = shuffled[index].number;
-      input.dispatchEvent(new Event("input")); // 自動的に名前を更新
+      input.dispatchEvent(new Event("input"));
     } else {
       input.value = "";
       input.dispatchEvent(new Event("input"));
     }
   });
 }
+    let originalAssignments = []; // 元の状態を保存
+const seats = document.querySelectorAll(".seat input.number-input");
+
+// 元の状態を保存する
+function saveOriginalSeats() {
+  originalAssignments = Array.from(seats).map(input => input.value);
+}
+
+// 元の状態に戻す
+function restoreOriginalSeats() {
+  seats.forEach((input, index) => {
+    input.value = originalAssignments[index] || "";
+    input.dispatchEvent(new Event("input"));
+  });
+}
+
+// ローカルストレージに保存
+function saveSeatAssignment() {
+  const assignment = Array.from(seats).map(input => input.value);
+  localStorage.setItem("savedSeatAssignment", JSON.stringify(assignment));
+  alert("座席の割り当てを保存しました。");
+}
+
+// ローカルストレージから復元
+function loadSeatAssignment() {
+  const saved = JSON.parse(localStorage.getItem("savedSeatAssignment") || "[]");
+  if (saved.length > 0) {
+    seats.forEach((input, index) => {
+      input.value = saved[index] || "";
+      input.dispatchEvent(new Event("input"));
+    });
+  }
+}
+
+// 初回ロード時に保存済みの割り当てを復元
+window.addEventListener("DOMContentLoaded", () => {
+  loadSeatAssignment();
+});
+
 
   </script>
 </body>
