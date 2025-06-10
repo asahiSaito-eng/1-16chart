@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>学校の座席表</title>
   <style>
     @page {
@@ -22,21 +22,20 @@
       box-sizing: border-box;
     }
 
-    #layout-wrapper {
+    .layout-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: none; /* アニメーションなし */
     }
 
-    .blackboard {
-      width: 100%;
-      max-width: 265mm;
-      border: 0.4mm solid black;
-      text-align: center;
-      font-weight: bold;
-      padding: 4mm;
-      box-sizing: border-box;
-      font-size: 18pt;
+    .rotated .layout-wrapper {
+      transform: rotate(180deg);
+    }
+
+    .rotated .layout-wrapper .seat,
+    .rotated .layout-wrapper .blackboard {
+      transform: rotate(180deg);
     }
 
     .grid-container {
@@ -45,7 +44,7 @@
       gap: 4mm;
       width: 100%;
       max-width: 265mm;
-      margin-top: 10mm;
+      margin: 10mm 0;
       padding: 0 5mm;
       box-sizing: border-box;
     }
@@ -95,6 +94,17 @@
       line-height: 1.1;
     }
 
+    .blackboard {
+      width: 100%;
+      max-width: 265mm;
+      border: 0.4mm solid black;
+      text-align: center;
+      font-weight: bold;
+      padding: 4mm;
+      box-sizing: border-box;
+      font-size: 18pt;
+    }
+
     .buttons {
       margin-top: 20px;
     }
@@ -114,21 +124,12 @@
         min-height: auto;
       }
     }
-
-    /* 回転クラス */
-    #layout-wrapper.rotated {
-      transform: rotate(180deg);
-    }
-    #layout-wrapper.rotated .seat,
-    #layout-wrapper.rotated .blackboard {
-      transform: rotate(180deg);
-    }
   </style>
 </head>
 <body>
   <h1>1-16座席表</h1>
 
-  <div id="layout-wrapper">
+  <div class="layout-wrapper" id="layout-wrapper">
     <div class="grid-container" id="seating-grid"></div>
     <div class="blackboard">黒板</div>
   </div>
@@ -143,6 +144,7 @@
 
   <script>
     const grid = document.getElementById("seating-grid");
+    const layoutWrapper = document.getElementById("layout-wrapper");
 
     const students = [
       { "number": 1, "name": "相坂美怜", "kana": "アイサカ ミサト" },
@@ -229,30 +231,8 @@
       }
     }
 
-    let originalAssignments = [];
     const seats = document.querySelectorAll(".seat input.number-input");
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function assignRandomSeats() {
-      saveOriginalSeats();
-      const shuffled = shuffleArray([...students]);
-      seats.forEach((input, index) => {
-        if (index < shuffled.length) {
-          input.value = shuffled[index].number;
-          input.dispatchEvent(new Event("input"));
-        } else {
-          input.value = "";
-          input.dispatchEvent(new Event("input"));
-        }
-      });
-    }
+    let originalAssignments = [];
 
     function saveOriginalSeats() {
       originalAssignments = Array.from(seats).map(input => input.value);
@@ -281,14 +261,35 @@
       }
     }
 
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function assignRandomSeats() {
+      saveOriginalSeats();
+      const shuffled = shuffleArray([...students]);
+      seats.forEach((input, index) => {
+        if (index < shuffled.length) {
+          input.value = shuffled[index].number;
+          input.dispatchEvent(new Event("input"));
+        } else {
+          input.value = "";
+          input.dispatchEvent(new Event("input"));
+        }
+      });
+    }
+
+    function rotateLayout() {
+      document.body.classList.toggle("rotated");
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       loadSeatAssignment();
     });
-
-    function rotateLayout() {
-      const wrapper = document.getElementById("layout-wrapper");
-      wrapper.classList.toggle("rotated");
-    }
   </script>
 </body>
 </html>
