@@ -22,6 +22,13 @@
       box-sizing: border-box;
     }
 
+    #layout-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.5s ease;
+    }
+
     .grid-container {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -44,6 +51,7 @@
       justify-content: flex-start;
       padding: 2mm;
       overflow: hidden;
+      transition: transform 0.5s ease;
     }
 
     .number-input {
@@ -87,6 +95,7 @@
       padding: 4mm;
       box-sizing: border-box;
       font-size: 18pt;
+      transition: transform 0.5s ease;
     }
 
     .buttons {
@@ -108,69 +117,73 @@
         min-height: auto;
       }
     }
-    
-    .rotated {
-  transform: rotate(180deg);
-}
 
-.rotated .seat {
-  transform: rotate(180deg);
-}
+    /* 回転用クラス */
+    #layout-wrapper.rotated {
+      transform: rotate(180deg);
+    }
+
+    #layout-wrapper.rotated .seat,
+    #layout-wrapper.rotated .blackboard {
+      transform: rotate(180deg);
+    }
 
   </style>
 </head>
 <body>
   <h1>1-16座席表</h1>
-  <div class="grid-container" id="seating-grid"></div>
-  <div class="blackboard">黒板</div>
-  
-  <div class="buttons">
-  <button onclick="assignRandomSeats()">ランダムに座席を決定</button>
-  <button onclick="restoreOriginalSeats()">元に戻す</button>
-  <button onclick="saveSeatAssignment()">固定割り当て保存</button>
-  <button onclick="rotateLayout()">レイアウトを180度回転</button>
-  <button onclick="window.print()">印刷 / PDF出力</button>
+
+  <div id="layout-wrapper">
+    <div class="blackboard">黒板</div>
+    <div class="grid-container" id="seating-grid"></div>
   </div>
 
+  <div class="buttons">
+    <button onclick="assignRandomSeats()">ランダムに座席を決定</button>
+    <button onclick="restoreOriginalSeats()">元に戻す</button>
+    <button onclick="saveSeatAssignment()">固定割り当て保存</button>
+    <button onclick="rotateLayout()">レイアウトを180度回転</button>
+    <button onclick="window.print()">印刷 / PDF出力</button>
+  </div>
 
   <script>
     const grid = document.getElementById("seating-grid");
 
     const students = [
-  { "number": 1, "name": "相坂美怜", "kana": "アイサカ ミサト" },
-  { "number": 2, "name": "浅川優希", "kana": "アサカワ ユウキ" },
-  { "number": 3, "name": "市川右馨", "kana": "イチカワ ウキョウ" },
-  { "number": 4, "name": "江口結唯", "kana": "エグチ ユイ" },
-  { "number": 5, "name": "奥田千尋", "kana": "オクダ チヒロ" },
-  { "number": 6, "name": "奥野尚", "kana": "オクノ ナオ" },
-  { "number": 7, "name": "尾澤佑真", "kana": "オザワ ユウマ" },
-  { "number": 8, "name": "春日琉希", "kana": "カスガ リュウキ" },
-  { "number": 9, "name": "片倉仁美", "kana": "カタクラ ヒトミ" },
-  { "number": 10, "name": "加藤結愛", "kana": "カトウ ユメ" },
-  { "number": 11, "name": "金谷駿", "kana": "カナヤ シュン" },
-  { "number": 12, "name": "郷原緒", "kana": "ゴウハラ イトハ" },
-  { "number": 13, "name": "小林芽以", "kana": "コバヤシ メイ" },
-  { "number": 14, "name": "齋藤旭", "kana": "サイトウ アサヒ" },
-  { "number": 15, "name": "酒寄克典", "kana": "サカヨリ カツノリ" },
-  { "number": 16, "name": "佐川怜", "kana": "サガワ レイ" },
-  { "number": 17, "name": "櫻井陸翔", "kana": "サクライ リクト" },
-  { "number": 18, "name": "佐藤直紀", "kana": "サトウ ナオキ" },
-  { "number": 19, "name": "鈴木ほの", "kana": "スズキ ホノ" },
-  { "number": 20, "name": "関桃香", "kana": "セキ モモカ" },
-  { "number": 21, "name": "関根香穂", "kana": "セキネ カホ" },
-  { "number": 22, "name": "竹内捺姫", "kana": "タケウチ ナツキ" },
-  { "number": 23, "name": "塚谷柊斗", "kana": "ツカタニ シュウト" },
-  { "number": 24, "name": "土田龍虎", "kana": "ツチダ リュウト" },
-  { "number": 25, "name": "中泉佑悠", "kana": "ナカイズミ ユウリ" },
-  { "number": 26, "name": "中田桜輔", "kana": "ナカダ オウスケ" },
-  { "number": 27, "name": "中野来瑠美", "kana": "ナカノ クルミ" },
-  { "number": 28, "name": "仁科梨菜", "kana": "ニシナ リナ" },
-  { "number": 29, "name": "端山日々萌", "kana": "ハヤマ ヒビキ" },
-  { "number": 30, "name": "舩張蒼良", "kana": "フナバリ ソラ" },
-  { "number": 31, "name": "古谷優歩", "kana": "フルタニ ユウホ" },
-  { "number": 32, "name": "松島好希", "kana": "マツシマ コウキ" },
-  { "number": 33, "name": "松本瑠唯", "kana": "マツモト ルイ" },
-  { "number": 34, "name": "横川遥城", "kana": "ヨコカワ ハルキ" }
+      { "number": 1, "name": "相坂美怜", "kana": "アイサカ ミサト" },
+      { "number": 2, "name": "浅川優希", "kana": "アサカワ ユウキ" },
+      { "number": 3, "name": "市川右馨", "kana": "イチカワ ウキョウ" },
+      { "number": 4, "name": "江口結唯", "kana": "エグチ ユイ" },
+      { "number": 5, "name": "奥田千尋", "kana": "オクダ チヒロ" },
+      { "number": 6, "name": "奥野尚", "kana": "オクノ ナオ" },
+      { "number": 7, "name": "尾澤佑真", "kana": "オザワ ユウマ" },
+      { "number": 8, "name": "春日琉希", "kana": "カスガ リュウキ" },
+      { "number": 9, "name": "片倉仁美", "kana": "カタクラ ヒトミ" },
+      { "number": 10, "name": "加藤結愛", "kana": "カトウ ユメ" },
+      { "number": 11, "name": "金谷駿", "kana": "カナヤ シュン" },
+      { "number": 12, "name": "郷原緒", "kana": "ゴウハラ イトハ" },
+      { "number": 13, "name": "小林芽以", "kana": "コバヤシ メイ" },
+      { "number": 14, "name": "齋藤旭", "kana": "サイトウ アサヒ" },
+      { "number": 15, "name": "酒寄克典", "kana": "サカヨリ カツノリ" },
+      { "number": 16, "name": "佐川怜", "kana": "サガワ レイ" },
+      { "number": 17, "name": "櫻井陸翔", "kana": "サクライ リクト" },
+      { "number": 18, "name": "佐藤直紀", "kana": "サトウ ナオキ" },
+      { "number": 19, "name": "鈴木ほの", "kana": "スズキ ホノ" },
+      { "number": 20, "name": "関桃香", "kana": "セキ モモカ" },
+      { "number": 21, "name": "関根香穂", "kana": "セキネ カホ" },
+      { "number": 22, "name": "竹内捺姫", "kana": "タケウチ ナツキ" },
+      { "number": 23, "name": "塚谷柊斗", "kana": "ツカタニ シュウト" },
+      { "number": 24, "name": "土田龍虎", "kana": "ツチダ リュウト" },
+      { "number": 25, "name": "中泉佑悠", "kana": "ナカイズミ ユウリ" },
+      { "number": 26, "name": "中田桜輔", "kana": "ナカダ オウスケ" },
+      { "number": 27, "name": "中野来瑠美", "kana": "ナカノ クルミ" },
+      { "number": 28, "name": "仁科梨菜", "kana": "ニシナ リナ" },
+      { "number": 29, "name": "端山日々萌", "kana": "ハヤマ ヒビキ" },
+      { "number": 30, "name": "舩張蒼良", "kana": "フナバリ ソラ" },
+      { "number": 31, "name": "古谷優歩", "kana": "フルタニ ユウホ" },
+      { "number": 32, "name": "松島好希", "kana": "マツシマ コウキ" },
+      { "number": 33, "name": "松本瑠唯", "kana": "マツモト ルイ" },
+      { "number": 34, "name": "横川遥城", "kana": "ヨコカワ ハルキ" }
     ];
 
     const layout = [5, 6, 6, 6, 6, 5];
@@ -221,72 +234,66 @@
       }
     }
 
+    let originalAssignments = [];
+    const seats = document.querySelectorAll(".seat input.number-input");
+
     function shuffleArray(array) {
-  // フィッシャー–イェーツのシャッフルアルゴリズム
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function assignRandomSeats() {
-  saveOriginalSeats(); // 元に戻すために保存
-  const shuffled = shuffleArray([...students]);
-  seats.forEach((input, index) => {
-    if (index < shuffled.length) {
-      input.value = shuffled[index].number;
-      input.dispatchEvent(new Event("input"));
-    } else {
-      input.value = "";
-      input.dispatchEvent(new Event("input"));
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
     }
-  });
-}
-    let originalAssignments = []; // 元の状態を保存
-const seats = document.querySelectorAll(".seat input.number-input");
 
-// 元の状態を保存する
-function saveOriginalSeats() {
-  originalAssignments = Array.from(seats).map(input => input.value);
-}
+    function assignRandomSeats() {
+      saveOriginalSeats();
+      const shuffled = shuffleArray([...students]);
+      seats.forEach((input, index) => {
+        if (index < shuffled.length) {
+          input.value = shuffled[index].number;
+          input.dispatchEvent(new Event("input"));
+        } else {
+          input.value = "";
+          input.dispatchEvent(new Event("input"));
+        }
+      });
+    }
 
-// 元の状態に戻す
-function restoreOriginalSeats() {
-  seats.forEach((input, index) => {
-    input.value = originalAssignments[index] || "";
-    input.dispatchEvent(new Event("input"));
-  });
-}
+    function saveOriginalSeats() {
+      originalAssignments = Array.from(seats).map(input => input.value);
+    }
 
-// ローカルストレージに保存
-function saveSeatAssignment() {
-  const assignment = Array.from(seats).map(input => input.value);
-  localStorage.setItem("savedSeatAssignment", JSON.stringify(assignment));
-  alert("座席の割り当てを保存しました。");
-}
+    function restoreOriginalSeats() {
+      seats.forEach((input, index) => {
+        input.value = originalAssignments[index] || "";
+        input.dispatchEvent(new Event("input"));
+      });
+    }
 
-// ローカルストレージから復元
-function loadSeatAssignment() {
-  const saved = JSON.parse(localStorage.getItem("savedSeatAssignment") || "[]");
-  if (saved.length > 0) {
-    seats.forEach((input, index) => {
-      input.value = saved[index] || "";
-      input.dispatchEvent(new Event("input"));
+    function saveSeatAssignment() {
+      const assignment = Array.from(seats).map(input => input.value);
+      localStorage.setItem("savedSeatAssignment", JSON.stringify(assignment));
+      alert("座席の割り当てを保存しました。");
+    }
+
+    function loadSeatAssignment() {
+      const saved = JSON.parse(localStorage.getItem("savedSeatAssignment") || "[]");
+      if (saved.length > 0) {
+        seats.forEach((input, index) => {
+          input.value = saved[index] || "";
+          input.dispatchEvent(new Event("input"));
+        });
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadSeatAssignment();
     });
-  }
-}
 
-// 初回ロード時に保存済みの割り当てを復元
-window.addEventListener("DOMContentLoaded", () => {
-  loadSeatAssignment();
-});
-
-function rotateLayout() {
-  const gridContainer = document.getElementById("seating-grid");
-  gridContainer.classList.toggle("rotated");
-}
-
+    function rotateLayout() {
+      const wrapper = document.getElementById("layout-wrapper");
+      wrapper.classList.toggle("rotated");
+    }
   </script>
 </body>
 </html>
