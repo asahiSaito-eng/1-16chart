@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>学校の座席表</title>
   <style>
     @page {
@@ -26,7 +26,17 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: transform 0.5s ease;
+    }
+
+    .blackboard {
+      width: 100%;
+      max-width: 265mm;
+      border: 0.4mm solid black;
+      text-align: center;
+      font-weight: bold;
+      padding: 4mm;
+      box-sizing: border-box;
+      font-size: 18pt;
     }
 
     .grid-container {
@@ -35,7 +45,7 @@
       gap: 4mm;
       width: 100%;
       max-width: 265mm;
-      margin-bottom: 10mm;
+      margin-top: 10mm;
       padding: 0 5mm;
       box-sizing: border-box;
     }
@@ -51,7 +61,6 @@
       justify-content: flex-start;
       padding: 2mm;
       overflow: hidden;
-      transition: transform 0.5s ease;
     }
 
     .number-input {
@@ -86,18 +95,6 @@
       line-height: 1.1;
     }
 
-    .blackboard {
-      width: 100%;
-      max-width: 265mm;
-      border: 0.4mm solid black;
-      text-align: center;
-      font-weight: bold;
-      padding: 4mm;
-      box-sizing: border-box;
-      font-size: 18pt;
-      transition: transform 0.5s ease;
-    }
-
     .buttons {
       margin-top: 20px;
     }
@@ -118,16 +115,14 @@
       }
     }
 
-    /* 回転用クラス */
+    /* 回転クラス */
     #layout-wrapper.rotated {
       transform: rotate(180deg);
     }
-
     #layout-wrapper.rotated .seat,
     #layout-wrapper.rotated .blackboard {
       transform: rotate(180deg);
     }
-
   </style>
 </head>
 <body>
