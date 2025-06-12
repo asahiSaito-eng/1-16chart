@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>学校の座席表</title>
   <style>
-       
     @page {
       size: A4 landscape;
       margin: 10mm;
@@ -27,7 +26,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: none;
+      transition: none; /* アニメーションなし */
     }
 
     .rotated .layout-wrapper {
@@ -125,18 +124,6 @@
         min-height: auto;
       }
     }
-
-    /* 演出アニメーション */
-    .name-display.highlight {
-      animation: flash 0.5s ease-in-out;
-    }
-
-    @keyframes flash {
-      0% { background-color: #ffff99; }
-      50% { background-color: #ffe066; }
-      100% { background-color: transparent; }
-    }
-
   </style>
 </head>
 <body>
@@ -282,39 +269,18 @@
       return array;
     }
 
-    async function assignRandomSeats() {
+    function assignRandomSeats() {
       saveOriginalSeats();
       const shuffled = shuffleArray([...students]);
-
-      for (let i = 0; i < seats.length; i++) {
-        const input = seats[i];
-        const nameDisplay = input.parentElement.querySelector(".name-display");
-
-        input.value = "";
-        nameDisplay.classList.remove("highlight");
-
-        if (i < shuffled.length) {
-          for (let t = 0; t < 5; t++) {
-            const fakeNum = Math.floor(Math.random() * students.length) + 1;
-            input.value = fakeNum;
-            input.dispatchEvent(new Event("input"));
-            await new Promise(resolve => setTimeout(resolve, 60));
-          }
-
-          input.value = shuffled[i].number;
+      seats.forEach((input, index) => {
+        if (index < shuffled.length) {
+          input.value = shuffled[index].number;
           input.dispatchEvent(new Event("input"));
-          nameDisplay.classList.add("highlight");
         } else {
           input.value = "";
           input.dispatchEvent(new Event("input"));
         }
-
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-
-      setTimeout(() => {
-        alert("🎉 座席が決まりました！");
-      }, 300);
+      });
     }
 
     function rotateLayout() {
