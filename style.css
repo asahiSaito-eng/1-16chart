@@ -1,0 +1,130 @@
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: none;
+}
+
+.rotated .layout-wrapper {
+  transform: rotate(180deg);
+}
+
+.rotated .layout-wrapper .seat,
+.rotated .layout-wrapper .blackboard {
+  transform: rotate(180deg);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4mm;
+  width: 100%;
+  max-width: 265mm;
+  margin: 10mm 0;
+  padding: 0 5mm;
+  box-sizing: border-box;
+}
+
+.seat {
+  width: 100%;
+  aspect-ratio: 7 / 3;
+  border: 0.3mm solid #000;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2mm;
+  overflow: hidden;
+}
+
+.number-input {
+  width: 20%;
+  height: 90%;
+  font-size: 10pt;
+  text-align: center;
+  background: #f0f0f0;
+  border: none;
+  margin-right: 4mm;
+}
+
+.name-display {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: ellipsis;
+}
+
+.name-display .name {
+  font-weight: bold;
+  font-size: 10.5pt;
+  line-height: 1.1;
+}
+
+.name-display .kana {
+  font-size: 9pt;
+  color: #444;
+  line-height: 1.1;
+}
+
+.blackboard {
+  width: 100%;
+  max-width: 265mm;
+  border: 0.4mm solid black;
+  text-align: center;
+  font-weight: bold;
+  padding: 4mm;
+  box-sizing: border-box;
+  font-size: 18pt;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+@media print {
+  .buttons, h1 {
+    display: none;
+  }
+  input {
+    border: none;
+    background: none;
+  }
+  body {
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 20mm;
+    min-height: auto;
+  }
+}
+
+/* 演出アニメーション */
+.name-display.highlight {
+  animation: flash 0.5s ease-in-out;
+}
+
+@keyframes flash {
+  0% { background-color: #ffff99; }
+  50% { background-color: #ffe066; }
+  100% { background-color: transparent; }
+}
